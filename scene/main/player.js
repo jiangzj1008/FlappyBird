@@ -1,43 +1,16 @@
-class PlayerDie extends GeImage {
-    constructor(game) {
-        super(game, 'player')
-        this.name = 'player_die'
-        this.setup()
-    }
-    setup() {
-        this.life = 1
-        this.changeCount = 1
-        this.changeTimes = 4
-        this.cooldown = 3
-        var name = this.name + this.changeCount
-        this.texture = this.game.textureByName(name)
-    }
-    update() {
-        if (this.cooldown > 0) {
-            this.cooldown--
-        } else {
-            if (this.changeCount < this.changeTimes) {
-                var name = this.name + (this.changeCount + 1)
-                this.texture = this.game.textureByName(name)
-                this.changeCount++
-                this.cooldown = 3
-            } else {
-                this.life = 0
-            }
-        }
-    }
-}
-
 class Player extends GeImage {
     constructor(game) {
         super(game, 'bird1')
         this.setup()
     }
     setup() {
+        this.frames = ['bird1', 'bird2', 'bird3']
         this.life = 1
         this.x = (500 - this.w) / 2
-        this.y = 800 - this.h - 50
-        this.speed = 15
+        this.y = 500 - this.h - 50
+        this.speed = 10
+        this.count = 0
+        this.cooldown = 3
     }
     move(x) {
         if (x < 0) {
@@ -60,6 +33,13 @@ class Player extends GeImage {
         this.scene.addElement(d, 'dead')
     }
     update() {
-
+        if (this.cooldown == 0) {
+            var num = this.count % this.frames.length
+            var name = this.frames[num]
+            this.texture = this.game.textureByName(name)
+            this.count++
+            this.cooldown = 3
+        }
+        this.cooldown--
     }
 }
