@@ -34,9 +34,6 @@ class SceneTitle extends GeScene {
         g.registerAction('d', function(){
             p.moveRight()
         })
-        // g.registerAction('j', function(){
-        //     p.fire()
-        // })
     }
     draw() {
         var types = Object.keys(this.elements)

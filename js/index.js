@@ -21,13 +21,21 @@ var enableDebugMode = function(game, enable) {
     })
 }
 
+var inputImg = function(images, name, num) {
+    for (var i = 1; i < num + 1; i++) {
+        var n = name + i
+        var path = 'img/' + n + '.png'
+        images[n] = path
+    }
+}
+
 var __main = function() {
     var images = {
-        bird1: 'img/bird1.png',
-        bird2: 'img/bird2.png',
-        bird3: 'img/bird3.png',
         background: 'img/bg.png',
     }
+    inputImg(images, 'bird', 3)
+    inputImg(images, 'run', 6)
+    inputImg(images, 'stand', 4)
 
     var game = GeGame.instance(30, images, function(g) {
         var s = SceneTitle.new(g)

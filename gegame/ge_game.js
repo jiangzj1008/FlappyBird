@@ -12,10 +12,10 @@ class GeGame {
         // events
         var self = this
         window.addEventListener('keydown', event => {
-            this.keydowns[event.key] = true
+            this.keydowns[event.key] = 'down'
         })
         window.addEventListener('keyup', function(event){
-            self.keydowns[event.key] = false
+            self.keydowns[event.key] = 'up'
         })
         this.init()
     }
@@ -48,7 +48,7 @@ class GeGame {
         var actions = Object.keys(this.actions)
         for (var i = 0; i < actions.length; i++) {
             var key = actions[i]
-            if(this.keydowns[key]) {
+            if(this.keydowns[key] == 'down') {
                 // 如果按键被按下, 调用注册的 action
                 this.actions[key]()
             }
@@ -66,7 +66,6 @@ class GeGame {
         }, 1000/window.fps)
     }
     textureByName(name) {
-        // log('image by name', this.images)
         var img = this.images[name]
         return img
     }
