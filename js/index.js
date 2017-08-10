@@ -36,6 +36,7 @@ var __main = function() {
     inputImg(images, 'bird', 3)
     inputImg(images, 'run', 6)
     inputImg(images, 'stand', 4)
+    inputImg(images, 'jump', 3)
 
     var game = GeGame.instance(30, images, function(g) {
         var s = SceneTitle.new(g)

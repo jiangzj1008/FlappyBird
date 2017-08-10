@@ -23,17 +23,6 @@ class SceneTitle extends GeScene {
         var game = this.game
         this.player = Player.new(game)
         this.addElement(this.player, 'player')
-        this.setupPlayerEvent()
-    }
-    setupPlayerEvent() {
-        var g = this.game
-        var p = this.player
-        g.registerAction('a', function(){
-            p.moveLeft()
-        })
-        g.registerAction('d', function(){
-            p.moveRight()
-        })
     }
     draw() {
         var types = Object.keys(this.elements)
