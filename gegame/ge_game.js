@@ -28,7 +28,11 @@ class GeGame {
         this.context.fillText(text, x, y)
     }
     drawImage(img) {
-        this.context.drawImage(img.texture, img.x, img.y)
+        if (img.draw) {
+            img.draw()
+        } else {
+            this.context.drawImage(img.texture, img.x, img.y)
+        }
     }
     // update
     update() {
@@ -44,18 +48,17 @@ class GeGame {
     }
     runloop() {
         // events
-        // var actions = Object.keys(this.actions)
-        // for (var i = 0; i < actions.length; i++) {
-        //     var key = actions[i]
-        //     var status = this.keydowns[key]
-        //     if(status == 'down') {
-        //         // 如果按键被按下, 调用注册的 action
-        //         this.actions[key]('down')
-        //     } else if (status == 'up') {
-        //         this.actions[key]('up')
-        //         this.keydowns[key] = ''
-        //     }
-        // }
+        var actions = Object.keys(this.actions)
+        for (var i = 0; i < actions.length; i++) {
+            var key = actions[i]
+            var status = this.keydowns[key]
+            if(status == 'down') {
+                this.actions[key]('down')
+            } else if (status == 'up') {
+                this.actions[key]('up')
+                this.keydowns[key] = ''
+            }
+        }
         // update
         this.update()
         // clear

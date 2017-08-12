@@ -15,30 +15,4 @@ class GeScene {
         var x = Math.random() * (end - start + 1)
         return Math.floor(x + start)
     }
-    draw() {
-        // var types = Object.keys(this.elements)
-        // for (var i = 0; i < types.length; i++) {
-        //     var type = types[i]
-        //     var elements = this.elements[type]
-        //     for (var j = 0; j < elements.length; j++) {
-        //         var e = elements[j]
-        //         if (e.life > 0) {
-        //             this.game.drawImage(e)
-        //         } else {
-        //             elements.splice(j, 1)
-        //         }
-        //     }
-        // }
-    }
-    update() {
-        // var types = Object.keys(this.elements)
-        // for (var i = 0; i < types.length; i++) {
-        //     var type = types[i]
-        //     var elements = this.elements[type]
-        //     for (var j = 0; j < elements.length; j++) {
-        //         var e = elements[j]
-        //         e.update()
-        //     }
-        // }
-    }
 }

@@ -1,92 +1,90 @@
 class Player extends GeImage {
     constructor(game) {
-        super(game, 'stand1')
+        super(game, 'bird1')
         this.setup()
     }
     setup() {
-        this.life = 1
-        this.x = (500 - this.w) / 2
-        this.y = 500 - this.h - 50
-        this.speed = 3
-        this.count = 0
-        this.cooldown = 5
-        this.jump = false
-        this.framesRun = this.setupFrames('run')
-        this.framesStand = this.setupFrames('stand')
-        this.framesJump = this.setupFrames('jump')
-        this.frames = this.framesStand
-        this.setupPlayerEvent()
+        this.life = 2
+        this.x = (300 - this.w) / 2
+        this.y = (512- this.h) / 2
+        this.speed = 5
+        this.gy = 1
+        this.vy = 0
+        this.setupFrames('bird', 3)
     }
-    setupFrames(name) {
-        var arr = []
-        var keys = Object.keys(this.game.images)
-        for (var i = 0; i < keys.length; i++) {
-            var key = keys[i]
-            if (key.indexOf(name) == 0) {
-                arr.push(key)
-            }
+    setupFrames(name, frameNum) {
+        var game = this.game
+        this.frames = []
+        for (var i = 1; i <= frameNum; i++) {
+            var n = `${name}${i}`
+            var t = game.textureByName(n)
+            this.frames.push(t)
         }
-        return arr
+        this.texture = this.frames[0]
+        this.frameIndex = 0
+        this.frameCount = frameNum
+        this.frameNum = frameNum
     }
     move(x) {
         if (x < 0) {
             x = 0
-        } else if (x > 500 - this.w) {
-            x = 500 - this.w
+        } else if (x > 300 - this.w) {
+            x = 300 - this.w
         }
         this.x = x
     }
-    setupPlayerEvent() {
-        var g = this.game
-        var p = this
-        g.registerAction('a', function(status){
-            p.moveLeft(status)
-        })
-        g.registerAction('d', function(status){
-            p.moveRight(status)
-        })
-        g.registerAction('k', function(status){
-            // p.jump(status)
-        })
+    moveLeft(status) {
+        if (status == 'down') {
+            this.flipX = true
+            this.move((this.x - this.speed))
+        }
     }
-    moveLeft() {
-        this.move((this.x - this.speed))
-    }
-    moveRight() {
-        this.move((this.x + this.speed))
+    moveRight(status) {
+        if (status == 'down') {
+            this.flipX = false
+            this.move((this.x + this.speed))
+        }
     }
     jump() {
-        
-    }
-    action() {
-        var g = this.game
-        var keydowns = g.keydowns
-        var actions = g.actions
-        // 根据按键组合改变状态
-        this.frames = this.framesStand
-        if (keydowns['a'] == 'down' || keydowns['d'] == 'down') {
-            this.frames = this.framesRun
-        }
-        if ((keydowns['a'] == 'down' && keydowns['k'] == 'down') || (keydowns['d'] == 'down' && keydowns['k'] == 'down')) {
-            this.frames = this.framesJump
-        }
-        // 根据按键控制动作
-        if (keydowns['a'] == 'down') {
-            this.moveLeft()
-        } else if (keydowns['d'] == 'down') {
-            this.moveRight()
-        }
+        this.vy = -10
+        this.rotation = -45
     }
     update() {
-        this.action()
-        var frames = this.frames
-        if (this.cooldown == 0) {
-            var num = this.count % frames.length
-            var name = frames[num]
-            this.texture = this.game.textureByName(name)
-            this.count++
-            this.cooldown = 5
+        // if (this.life < 2) {
+        //     return
+        // }
+        // vy
+        this.vy += this.gy
+        this.y += this.vy
+        if (this.y > 512) {
+            this.life--
         }
-        this.cooldown--
+        // rotation
+        if (this.rotation < 45) {
+            this.rotation += 5
+        } else {
+            this.rotation = 45
+        }
+        // frame
+        this.frameCount--
+        if (this.frameCount == 0) {
+            this.frameCount = this.frameNum
+            this.frameIndex = (this.frameIndex + 1) % this.frames.length
+            this.texture = this.frames[this.frameIndex]
+        }
+    }
+    draw() {
+        var context = this.game.context
+        context.save()
+        var w2 = this.w/2
+        var h2 = this.h/2
+        context.translate(this.x + w2, this.y + h2)
+        var scaleX = this.flipX ? -1 : 1
+        var scaleY = this.flipY ? -1 : 1
+        context.scale(scaleX, scaleY)
+        context.rotate(this.rotation * Math.PI / 180)
+        context.translate(-w2, -h2)
+        context.drawImage(this.texture, 0, 0)
+        context.restore()
     }
 }

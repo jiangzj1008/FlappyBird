@@ -5,25 +5,41 @@ class Scene extends GeScene {
     }
     setup() {
         this.score = 0
-        this.cooldown = 150
         this.elements = {
             backgrounds: [],
+            pipes: [],
             player: [],
-            enermys: [],
-            dead: [],
-            bullets: [],
         }
-        this.setupBackground()
         this.setupPlayer()
-        this.setupEnermy()
+        this.setupPipe()
     }
-    setupBackground() {
+    setupPipe() {
+        this.pipeBetween = 200
+        this.pipeSpace = 200
         var game = this.game
-        for (var i = 0; i < 2; i++) {
-            var bg = Background.new(game)
-            bg.y = -853 * i
-            this.addElement(bg, 'backgrounds')
+        for (var i = 0; i < 3; i++) {
+            var p1 = Pipe.new(game)
+            var p2 = Pipe.new(game)
+            p1.x = this.pipeBetween * i + 350
+            p2.x = p1.x
+            p1.y = this.randomBetween(-400, -200)
+            p2.y = p1.y + this.pipeSpace + p1.h
+            p2.flipY = true
+            this.addElement(p1, 'pipes')
+            this.addElement(p2, 'pipes')
         }
+    }
+    addNewPipe() {
+        var game = this.game
+        var p1 = Pipe.new(game)
+        var p2 = Pipe.new(game)
+        p1.x = this.pipeBetween + 350
+        p2.x = p1.x
+        p1.y = this.randomBetween(-400, -200)
+        p2.y = p1.y + this.pipeSpace + p1.h
+        p2.flipY = true
+        this.addElement(p1, 'pipes')
+        this.addElement(p2, 'pipes')
     }
     setupPlayer() {
         var game = this.game
@@ -34,43 +50,48 @@ class Scene extends GeScene {
     setupPlayerEvent() {
         var g = this.game
         var p = this.player
-        g.registerAction('a', function(){
-            p.moveLeft()
+        g.registerAction('a', function(keyStatus){
+            p.moveLeft(keyStatus)
         })
-        g.registerAction('d', function(){
-            p.moveRight()
+        g.registerAction('d', function(keyStatus){
+            p.moveRight(keyStatus)
         })
-        g.registerAction('w', function(){
-            p.moveUp()
-        })
-        g.registerAction('s', function(){
-            p.moveDown()
-        })
-        g.registerAction('j', function(){
-            p.fire()
+        g.registerAction('j', function(keyStatus){
+            p.jump(keyStatus)
         })
     }
-    setupEnermy() {
-        this.numOfEnermy_1 = this.randomBetween(2, 3)
-        this.numOfEnermy_2 = this.randomBetween(0, 1)
-        this.numOfEnermy_3 = this.randomBetween(0, 1)
+    drawScore() {
+        var text = '得分：' + this.score
+        this.game.drawText(text, 0, 25)
+    }
+    detect() {
+        var bird = this.player
+        var pipes = this.elements.pipes
+        for (var i = 0; i < pipes.length; i++) {
+            var p = pipes[i]
+            if (bird.collide(p)) {
+                bird.life--
+            }
+        }
+        if (bird.life <= 1) {
+            var self = this
+            self.update = function() {}
+            setTimeout(function () {
+                self.end()
+            }, 1000)
+        }
+    }
 
-        this.addEnermies()
+    end() {
+        var g = this.game
+        var self = this
+        var s = SceneEnd.new(g)
+        s.elements.backgrounds = self.elements.backgrounds
+        s.score = self.score
+        g.replaceScene(s)
     }
-    addEnermies() {
-        for (var i = 0; i < this.numOfEnermy_1; i++) {
-            var e = Enermy_1.new(this.game)
-            this.addElement(e, 'enermys')
-        }
-        for (var j = 0; j < this.numOfEnermy_2; j++) {
-            var e = Enermy_2.new(this.game)
-            this.addElement(e, 'enermys')
-        }
-        for (var k = 0; k < this.numOfEnermy_3; k++) {
-            var e = Enermy_3.new(this.game)
-            this.addElement(e, 'enermys')
-        }
-    }
+
+
     draw() {
         var types = Object.keys(this.elements)
         for (var i = 0; i < types.length; i++) {
@@ -81,14 +102,18 @@ class Scene extends GeScene {
                 if (e.life > 0) {
                     this.game.drawImage(e)
                 } else {
-                    elements.splice(j, 1)
+                    this.score++
+                    this.addNewPipe()
+                    elements.splice(j, 2)
                 }
             }
         }
-        var text = '得分：' + this.score
-        this.game.drawText(text, 0, 25)
+        this.drawScore()
     }
     update() {
+        if (window.paused) {
+            return
+        }
         var types = Object.keys(this.elements)
         for (var i = 0; i < types.length; i++) {
             var type = types[i]
@@ -97,39 +122,7 @@ class Scene extends GeScene {
                 var e = elements[j]
                 e.update()
             }
-
-            if (type == 'enermys') {
-                for (var k = 0; k < elements.length; k++) {
-                    var enermy = elements[k]
-                    for (var l = 0; l < this.elements.player.length; l++) {
-                        var player = this.elements.player[l]
-                        if (enermy.collide(player)) {
-                            enermy.life--
-                            player.life--
-                            if (player.life == 0) {
-                                player.die()
-                            }
-                        }
-                    }
-                    for (var l = 0; l < this.elements.bullets.length; l++) {
-                        var bullet = this.elements.bullets[l]
-                        if (enermy.collide(bullet)) {
-                            enermy.life--
-                            bullet.life--
-                        }
-                    }
-                    if (enermy.life == 0) {
-                        this.score += enermy.score
-                        enermy.die()
-                    }
-                }
-            }
-
         }
-        if (this.cooldown == 0) {
-            this.cooldown = 100
-            this.setupEnermy()
-        }
-        this.cooldown--
+        this.detect()
     }
 }
