@@ -4,6 +4,7 @@ class Title extends GeImage {
         this.setup()
     }
     setup() {
+        this.life = 1
         this.x = (300 - this.w) / 2
         this.y = (512- this.h) / 2 - 50
     }

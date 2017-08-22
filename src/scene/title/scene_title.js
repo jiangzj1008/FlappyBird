@@ -8,7 +8,6 @@ class SceneTitle extends GeScene {
         this.elements = {
             backgrounds: [],
             title: [],
-            pipes: [],
             player: [],
         }
         this.setupBackground()
@@ -64,7 +63,6 @@ class SceneTitle extends GeScene {
         if (window.paused) {
             return
         }
-        this.player.rotation = 0
         var types = Object.keys(this.elements)
         for (var i = 0; i < types.length; i++) {
             var type = types[i]
@@ -74,5 +72,6 @@ class SceneTitle extends GeScene {
                 e.update()
             }
         }
+        this.player.rotation = 0
     }
 }

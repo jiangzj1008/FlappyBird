@@ -50,17 +50,5 @@ class SceneEnd extends GeScene {
     }
     update() {
         return
-        // if (window.paused) {
-        //     return
-        // }
-        // var types = Object.keys(this.elements)
-        // for (var i = 0; i < types.length; i++) {
-        //     var type = types[i]
-        //     var elements = this.elements[type]
-        //     for (var j = 0; j < elements.length; j++) {
-        //         var e = elements[j]
-        //         e.update()
-        //     }
-        // }
     }
 }

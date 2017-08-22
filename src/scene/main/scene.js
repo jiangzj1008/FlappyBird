@@ -81,7 +81,6 @@ class Scene extends GeScene {
             }, 1000)
         }
     }
-
     end() {
         var g = this.game
         var self = this
@@ -90,8 +89,6 @@ class Scene extends GeScene {
         s.score = self.score
         g.replaceScene(s)
     }
-
-
     draw() {
         var types = Object.keys(this.elements)
         for (var i = 0; i < types.length; i++) {
