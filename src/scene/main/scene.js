@@ -69,10 +69,17 @@ class Scene extends GeScene {
         var pipes = this.elements.pipes
         for (var i = 0; i < pipes.length; i++) {
             var p = pipes[i]
+            // 检测管子与小鸟的碰撞
             if (bird.collide(p)) {
                 bird.life--
             }
+            // 检测是否得分
+            if (bird.x > p.x && p.score == false) {
+                this.score += 0.5
+                p.score = true
+            }
         }
+        // 检测是否结束
         if (bird.life <= 1) {
             var self = this
             self.update = function() {}
@@ -99,7 +106,6 @@ class Scene extends GeScene {
                 if (e.life > 0) {
                     this.game.drawImage(e)
                 } else {
-                    this.score++
                     this.addNewPipe()
                     elements.splice(j, 2)
                 }

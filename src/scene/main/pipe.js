@@ -7,6 +7,7 @@ class Pipe extends GeImage {
         this.speed = 5
         this.life = 1
         this.skipCount = 60
+        this.score = false
     }
     update() {
         this.skipCount--
