@@ -108,6 +108,7 @@ class Scene extends GeScene {
                 } else {
                     this.addNewPipe()
                     elements.splice(j, 2)
+                    j--
                 }
             }
         }
